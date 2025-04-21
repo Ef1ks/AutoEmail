@@ -54,10 +54,8 @@ def send_email_to_all(payload: MultiMailAttributes, db: Session = Depends(get_db
             content=payload.content
         )
         db.add(company_to_add)
-        db.commit()
-        db.refresh(company_to_add)
         send_mail(company.company_email, payload.subject, payload.content)
-
+    db.commit()
 
 
 
