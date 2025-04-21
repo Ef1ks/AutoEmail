@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     port: int
     serverEmail: str
     dane: str
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
 
     class Config:
         env_file = ".env"

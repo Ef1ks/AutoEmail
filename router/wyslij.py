@@ -51,7 +51,8 @@ def send_email_to_all(payload: MultiMailAttributes, db: Session = Depends(get_db
         company_to_add=SentMailHistory(
             company_id=company.company_id,
             subject=payload.subject,
-            content=payload.content
+            content=payload.content,
+            user_id=get_current_user.id
         )
         db.add(company_to_add)
         send_mail(company.company_email, payload.subject, payload.content)
