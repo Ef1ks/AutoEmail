@@ -6,6 +6,10 @@ model.Base.metadata.create_all(bind=engine)
 
 from router import wyslij, addToDB, user, auth, emailhistory
 
+from funkcje.folder import create_dir
+import os
+
+
 app = FastAPI()
 
 app.include_router(wyslij.router)

@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from os.path import split
 
@@ -6,46 +7,40 @@ from fastapi import HTTPException
 from psycopg2.errorcodes import CLASS_LOCATOR_EXCEPTION
 from pydantic import BaseModel, EmailStr, field_validator, model_validator, root_validator
 
+from funkcje.folder import create_dir
 
-class createFirma(BaseModel):
-    email: EmailStr
-    class Config:
-        from_attributes = True
-
-class createSinglePost(BaseModel):
-    subject: str
-    class Config:
-        from_attributes = True
+base_dir = os.path.dirname(__file__)
+attachment_dir = create_dir(base_dir)
 
 class CreateUser(BaseModel):
-    user_email: EmailStr
-    user_password: str
-    user_name: str | None = None
+    email: EmailStr
+    password: str
+    nickname: str | None = None
     class Config:
         from_attributes = True
 
     @model_validator(mode='after')
     def default_name(self):
-        if self.user_name is None and self.user_email:
-            self.user_name=self.user_email.split("@")[0]
+        if self.nickname is None and self.email:
+            self.nickname=self.email.split("@")[0]
         return self
 
 class ResponseCreateUser(BaseModel):
-    user_id: int
+    id: int
     email: EmailStr
-    name: str
+    nickname: str
     created_at: datetime
     class Config:
         from_attributes = True
 
 class ResponseListUsers(BaseModel):
-    user_id: int
-    name: str
+    id: int
+    nickname: str
     class Config:
         from_attributes = True
 
 class ResponseSingleUser(BaseModel):
-    user_id: int
+    id: int
     name: str
     email: EmailStr
     created_at: datetime
@@ -69,7 +64,7 @@ class UserLoginCheck(BaseModel):
         return self
 
 class ResponseUserLogin(BaseModel):
-    user_id: int
+    id: int
     email: EmailStr | None
     class Config:
         from_attributes = True
@@ -81,19 +76,14 @@ class TokenData(BaseModel):
     id: int
 
 class AddCompanyModel(BaseModel):
-    company_name: str
-    company_email: EmailStr
-    class Config:
-        from_attributes = True
-
-class CompanyMailCollector(BaseModel):
-    company_email: str
+    name: str
+    email: EmailStr
     class Config:
         from_attributes = True
 
 class SingleMailAttributes(BaseModel):
-    company_email: EmailStr | None = None
-    company_name: str | None = None
+    email: EmailStr | None = None
+    name: str | None = None
     subject: str
     content: str
     class Config:
